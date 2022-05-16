@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Create Group - Uconnect</title>
+</head>
+<body>
+<h3>Create Uconnect Group</h3>
+    
+    <br>
+    <p>Enter new group name: </p>
+    <input type="text" id="new_group" placeholder="Group Name" disabled>
+    
+    <button type="submit" id="create" disabled>Create</button>
+    
+    <p><a href= "/client">cancel</a></p>
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/socket.io.js"></script>
+    <script>
+        let new_group = document.getElementById('new_group');
+        let create = document.getElementById('create');
+        let user = "";
+        let tagline = "";
+        let groups = "";
+        let group_names = "";
+        let user_id = "";
+        
+        let socket = io({autoConnect: false});
+        socket.connect();
+
+        function saveData(name, tagline, userid, groups, group_names) {
+            var account = {
+                Name: name,
+                Tagline: tagline,
+                User_id: user_id,
+                Groups: groups,
+                Group_names: group_names
+            };
+            //converts to JSON string the Object
+            account = JSON.stringify(account);
+            //creates a base-64 encoded ASCII string
+            account = btoa(account);
+            //clear old data;
+            localStorage.removeItem('_account');
+            //save the encoded accout to web storage
+            localStorage.setItem('_account', account);
+        }
+
+        function loadData() {
+            var account = localStorage.getItem('_account');
+            if (!account) return false;
+            //decodes a string data encoded using base-64
+            account = atob(account);
+            //parses to Object the JSON string
+            account = JSON.parse(account);
+            //do what you need with the Object
+            user = account.Name;
+            tagline = account.Tagline;
+            user_id = account.User_id;
+            groups = account.Groups;
+            group_names = account.Group_names;
+            //console.log(groups);
+            return true;
+        }
+
+        socket.on('connect', function(){
+            loadData();
+            new_group.disabled = false;
+            create.disabled = false;
+            console.log("Connected to server!");
+        });
+
+        create.onclick = function(){
+            socket.connect();
+            socket.emit('group', new_group.value + "!@#$%!%@$#" + user_id);
+        };
+
+        socket.on('create_fail', function(){
+            alert("Group Name has already been taken!");
+            console.log("Group Name has already been taken!");
+            socket.close();
+        });
+        
+        socket.on('create_success', function(data){
+            const group_i = data.split("[12@#$@")[0];//new group id
+            const group_n = data.split("[12@#$@")[1];//new group name
+            groups.push(group_i);
+            group_names.push(group_n);
+            saveData(user, tagline, user_id, groups, group_names);
+            socket.close();
+            window.location.href = "/client";
+        });
+
+        
+    </script>
+</body>
+</html>

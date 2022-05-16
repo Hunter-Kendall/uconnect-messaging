@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Login - Uconnect</title>
+</head>
+<body>
+<h3>Uconnect Login</h3>
+    
+    <br>
+    <p>Enter login name: </p>
+    <input type="text" id="username" placeholder="Username">
+    <p>Enter Password: </p> <input type="password" id="password" placeholder="Password">
+    
+    <button type="submit" id="sign_in">Sign In</button>
+    
+<p>Dont have an account? Register <a href= "/register">here!</a></p>
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/socket.io.js"></script>
+    <script>
+        let socket = io({autoConnect: false});
+        let username = document.getElementById('username');
+        let password = document.getElementById('password');
+        let sign_in = document.getElementById('sign_in');
+        //saves account data to webstorage
+        function saveData(name, tagline, userid, groups, group_names) {
+            var account = {
+                Name: name,
+                Tagline: tagline,
+                User_id: user_id,
+                Groups: groups,
+                Group_names: group_names
+            };
+            //converts to JSON string the Object
+            account = JSON.stringify(account);
+            //creates a base-64 encoded ASCII string
+            account = btoa(account);
+            //clear old data;
+            localStorage.removeItem('_account');
+            //save the encoded accout to web storage
+            localStorage.setItem('_account', account);
+            }
+        sign_in.onclick = function(){
+            socket.connect();
+            if(username.value != "" || password.value != ""){
+                socket.emit('login', username.value + ":)-+-(:" + password.value);
+                password.value = "";
+                
+            }
+            else{
+                alert("Please enter an username and password!");
+                console.log("Please enter an username and password!");
+                socket.close();
+            }
+        };
+        socket.on('login_fail', function(){
+            alert("Username or Password is incorrect!");
+            console.log("Username or Password is incorrect!");
+            socket.close();
+        });
+
+        socket.on('login_success', function(u_data){
+            const data = u_data.split(":@@@@@@@@@:")[0].split("|_|");
+            const group_id = u_data.split(":@@@@@@@@@:")[1].split("|+|+");
+            const group_name = u_data.split(":@@@@@@@@@:")[2].split("|-|-");
+            user = data[1];
+            tagline = data[0];
+            user_id = data[2];//list of group ids
+            groups = group_id;//list of group names
+            group_names = group_name;
+            saveData(user, tagline, user_id, groups, group_names);
+            console.log("switching page");
+            socket.close()
+            window.location.href = "/client";
+            
+        });
+
+
+    </script>
+</body>
+</html>

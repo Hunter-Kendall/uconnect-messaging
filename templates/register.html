@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Register - Uconnect</title>
+</head>
+<body>
+<h3>Uconnect Register</h3>
+    
+    <br>
+    <p>Enter Chat Name:</p>
+    <input type="text" id="chat_name" placeholder="Chat Name">
+    <p>Enter Login Name: </p>
+    <input type="text" id="username" placeholder="Username">
+    <p>Enter Password: </p> <input type="password" id="password" placeholder="Password">
+    <p>Renter Password: </p> <input type="password" id="password2" placeholder="Password">
+    
+    <button type="submit" id="register">Register</button>
+    
+
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/socket.io.js"></script>
+    <script>
+        let socket = io({autoConnect: false});
+        let chat_name = document.getElementById('chat_name');
+        let username = document.getElementById('username');
+        let password = document.getElementById('password');
+        let password2 = document.getElementById('password2');
+        let register_btn = document.getElementById('register');
+
+        register_btn.onclick = function(){
+            socket.connect();
+            if(username.value == "" || chat_name.value == ""){
+                alert("Please enter an username and chat name!");
+                console.log("Please enter an username and chat name!");
+                socket.close();
+            }
+            //checks if passwords are the same
+            else if(password2.value != password.value){
+                alert("Passwords do not match!");
+                console.log("Passwords do not match!");
+                password.value = "";
+                password1.value = "";
+                socket.close();
+            }
+            else if(chat_name.value.includes(" ")){
+                alert("Chat name cannot have spaces!");
+                console.log("Chat name cannot have spaces!");
+                password.value = "";
+                password1.value = "";
+                socket.close();
+            }
+            else if(chat_name.value.includes("#")){
+                alert("Chat name cannot have hashtags!");
+                console.log("Chat name cannot have hashtags!");
+                password.value = "";
+                password1.value = "";
+                socket.close();
+            }
+            else{
+                socket.emit('register', chat_name.value + ":)+=+(:" + username.value + ":)+=+(:" + password.value);
+                password.value = "";
+                password1.value = "";
+            }
+        };
+        //tells user resgister errors
+        socket.on('register_fail', function(data){
+            alert(data);
+            console.log(data);
+            socket.close();
+        });
+        //sends user back to login
+        socket.on('register_success', function(){
+            socket.close();
+            console.log("switching page")
+            window.location.href = "/";
+            
+
+        });
+
+    </script>
+</body>
+</html>
