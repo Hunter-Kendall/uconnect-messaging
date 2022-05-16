@@ -4,9 +4,8 @@
     <title>Uconnect</title>
 </head>
 <body>
-<div style="width: 100%; background-color: darkgreen; margin-bottom: 10px; margin-top: 10px;">
-    <h3>Uconnect</h3>
-</div>
+
+<h3>Uconnect</h3>
     <div style="width: 100%;">
         <div style="width: 550px; height: 100%; float: left;">
             <select id = "group_select">
@@ -136,14 +135,13 @@
 
         //tells when the user closes the window. removes them from user list
         window.addEventListener('beforeunload', function () {
-            socket.emit('notify', user + "@@@@@" + tagline + "@@@@@" + groups[current_group] + "@@@@@0" +"@@@@@"+ user_id)
-            console.log("notify leave")
+            socket.emit('notify', user + "@@@@@" + tagline + "@@@@@" + groups[current_group] + "@@@@@0" +"@@@@@"+ user_id);
+            
         });
 
         // updates the online column of the database
         socket.on('disconnect', function(){
             socket.emit('notify', user + "@@@@@" + tagline + "@@@@@" + groups[current_group] + "@@@@@0" +"@@@@@"+ user_id);
-            console.log("notify leave")
             console.log('Disconnected to server!')
             inp_message.disabled = true;               
             send.disabled = true;
@@ -157,14 +155,13 @@
         //creates online list
         socket.on('notify_', function(status){
             clearcontent("group_members");
-            console.log("clearing")
+            
             let users = "";
             let name = "";
             let group_i = "";
             let tag = "";
             users = status.split("[123[32[");
             for (var i = 0; i < users.length; i++) {
-                console.log(users[i]);
                 name = users[i].split("@@@@@")[0];
                 group_i = users[i].split("@@@@@")[2];
                 tag = users[i].split("@@@@@")[1];

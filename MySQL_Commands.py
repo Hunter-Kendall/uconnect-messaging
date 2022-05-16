@@ -8,8 +8,7 @@ class DB_Commands():
                 host = "38.240.241.204",
                 user = "uconnect",
                 password = "csci400@HC",
-                database = "Uconnect"
-        )
+                database = "Uconnect")
         #str(input("Password: "))
         self.c = self.conn.cursor()
 
@@ -54,10 +53,8 @@ class DB_Commands():
         message = message.split(": ")[1]
         self.c.execute(f'''SELECT user_id FROM Users WHERE name = "{name[:-6]}" AND tagline = "{name[-5:]}"''')
         id_fetch = self.c.fetchone()[0]
-        print(id_fetch)
         self.c.execute(f'''SELECT MAX(group_message_num) FROM Messages WHERE group_id = {group_id}''')
         group_message_num = self.c.fetchone()[0]
-        print(type(group_message_num))
         if isinstance(group_message_num, int):
             pass
         else:
@@ -101,14 +98,15 @@ class DB_Commands():
         check_username = self.c.fetchone()
         if isinstance(check_username, tuple):
             #Error 1 means that the login name is taken
-            check_username = "Error 1"
+            return "Error 1"
         else: 
             check_username = "Login name available"
         #getting the tagline
 
         self.c.execute(f"""SELECT name FROM Users WHERE name = '{chatname}' """)
         check_chatname = self.c.fetchall()
-        if isinstance(check_chatname, tuple):
+
+        if isinstance(check_chatname, list):
             if len(check_chatname) + 1 > 9:
                 tagline = f"#00{len(check_chatname) + 1}"
             elif len(check_chatname) + 1 > 99:
@@ -117,7 +115,7 @@ class DB_Commands():
                 tagline = f"#{len(check_chatname) + 1}"
             elif len(check_chatname) + 1 > 9999:
                 #error 2 means that there are too many accounts with that chat name
-                check_username = "Error 2"
+                return "Error 2"
             else:
                 tagline = f"#000{len(check_chatname) + 1}"
         else:

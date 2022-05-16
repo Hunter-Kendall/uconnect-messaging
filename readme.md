@@ -1,7 +1,11 @@
 # Uconnect
 ### A Group Messaging Web App
 
-https://uconnect-messaging.herokuapp.com/
+**website link:** https://uconnect-messaging.herokuapp.com/
+
+*Email me when grading to make sure that my pc is on so it can connect to the database.*
+
+*Join code with example data:* **qQrZcZmOtC**
 
 ---
 ## What I Worked On
@@ -64,6 +68,7 @@ What the web page started with was a username field, connect button, disconnect 
 - Select wich group to join/view.
 - The ability to see who is online in that group.
 - Added/connected the database.
+  - Made sure that there cannot be duplicate people wo i added the taglines that if 
 
 ## References
 
