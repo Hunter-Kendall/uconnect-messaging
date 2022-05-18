@@ -5,10 +5,10 @@ import copy
 class DB_Commands():
     def __init__(self):
         self.conn = mysql.connector.connect(
-                host = "38.240.241.204",
-                user = "uconnect",
-                password = "csci400@HC",
-                database = "Uconnect")
+                host = "",
+                user = "",
+                password = "",
+                database = "")
         #str(input("Password: "))
         self.c = self.conn.cursor()
 
